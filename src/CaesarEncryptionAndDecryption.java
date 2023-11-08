@@ -1,15 +1,8 @@
 import java.util.Arrays;
 
-public class CaesarEncryption {
+public class CaesarEncryptionAndDecryption {
+
     static String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-
-    public static void main(String[] args) {
-
-        System.out.println(encrypted(3, "HELLO"));
-        System.out.println(decrypted(3,"HELLO"));
-        System.out.println(Arrays.toString(findIndexOfMessage("HELLO")));
-
-    }
 
 
     public static String[] shuffleFirstAlphabetsByKey(int key) {
@@ -24,11 +17,11 @@ public class CaesarEncryption {
         return shiftLetterByKeyOnly;
     }
 
-    public static String[] moveAllAlphabetByKey(int key){
+    public static String[] moveAllAlphabetByKey(int key) {
         String[] arrangeAllAlphabetsByKey = shuffleFirstAlphabetsByKey(key);
         int count = key;
         int length = alphabet.length - key;
-        for (int index = 0; index < length; index++){
+        for (int index = 0; index < length; index++) {
             arrangeAllAlphabetsByKey[count] = alphabet[index];
             count++;
         }
@@ -37,6 +30,7 @@ public class CaesarEncryption {
 
     public static int[] findIndexOfMessage(String messages) {
         int[] indexOfMessage = new int[messages.length()];
+
         for (int index = 0; index < messages.length(); index++) {
             String letter = String.valueOf(messages.charAt(index));
             for (int count = 0; count < alphabet.length; count++) {
@@ -48,31 +42,46 @@ public class CaesarEncryption {
         return indexOfMessage;
     }
 
-    public static String encrypted(int key, String message) {
-        int [] indexOfMessage = findIndexOfMessage(message);
+    public static StringBuilder encrypted(int key, String message) {
+        int[] indexOfMessage = findIndexOfMessage(message);
 
-        String [] alphabet = moveAllAlphabetByKey(key);
-        StringBuilder words = new StringBuilder();
+        String[] encryptedLetters = moveAllAlphabetByKey(key);
+        StringBuilder encryptedMessage = new StringBuilder();
 
         for (int index = 0; index < indexOfMessage.length; index++) {
             int number = indexOfMessage[index];
-           String word = alphabet[number];
-           words.append(word);
+            String encryptedSingleLetter = encryptedLetters[number];
+            encryptedMessage.append(encryptedSingleLetter);
         }
-        return words.toString();
+        return encryptedMessage;
     }
-    public static StringBuilder decrypted(int key, String message) {
-        int [] indexOfMessage = findIndexOfMessage(message);
 
-        String [] alphabets = alphabet;
-        StringBuilder word = new StringBuilder();
-        for(int index = 0; index < indexOfMessage.length;index++){
-            int number = indexOfMessage[index];
-            String words = alphabets[number];
-            word.append(words);
+    public static int[] findIndexOfEncryptedMessage(int key,String messages) {
+        int[] indexOfEncryptedMessage = new int[messages.length()];
+
+        for (int index = 0; index < messages.length(); index++) {
+            String letter = String.valueOf(messages.charAt(index));
+            for (int count = 0; count < moveAllAlphabetByKey(key).length; count++) {
+                if (letter.equals(moveAllAlphabetByKey(key)[count])) {
+                    indexOfEncryptedMessage[index] = count;
+                }
+            }
+        }
+        return indexOfEncryptedMessage;
+    }
+
+    public static StringBuilder decrypted(int key, String messages){
+        int [] indexOfMessage = findIndexOfEncryptedMessage(key,messages);
+        System.out.println(Arrays.toString(indexOfMessage));
+        String[] normalAlphabet = alphabet;
+        StringBuilder decryptedMessages = new StringBuilder();
+        for(int count = 0; count < indexOfMessage.length; count++) {
+            int index = indexOfMessage[count];
+            String decryptedSingleLetter = normalAlphabet[index];
+            decryptedMessages.append(decryptedSingleLetter);
         }
 
-        return word;
+        return decryptedMessages;
     }
 
 
